@@ -95,17 +95,6 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
           />
         </div>
 
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Social Media Links</h3>
-          <div className="grid gap-4 md:grid-cols-2">
-            {socialIcons.map(({ name, icon: Icon, label }) => (
-              <div key={name} className="flex items-center space-x-4">
-                <Icon className="h-4 w-4" />
-                <span className="text-sm">{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </form>
     </Form>
   );
