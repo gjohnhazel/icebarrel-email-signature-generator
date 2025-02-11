@@ -138,6 +138,19 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
         <div className="grid gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="name@icebarrel.com" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
@@ -157,19 +170,6 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
                 <FormLabel>Title</FormLabel>
                 <FormControl>
                   <Input placeholder="Chief of Staff" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder="john@company.com" {...field} />
                 </FormControl>
               </FormItem>
             )}
