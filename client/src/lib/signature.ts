@@ -73,7 +73,8 @@ export function generateSignatureHTML(data: SignatureData): string {
                           <td style="margin: 0px; padding: 0.01px;">
                             <p style="margin: 0.1px; line-height: 17.28px; font-size: 16px;">
                               <span style="font-family: Arial; font-size: 16px; font-weight: bold; color: rgb(25, 27, 29); letter-spacing: 0px; white-space: nowrap;">${data.name}</span><br>
-                              <span style="font-family: Arial; font-size: 13px; color: rgb(25, 27, 29); white-space: nowrap;">${data.title}, ${data.company}</span>
+                              <span style="font-family: Arial; font-size: 14px; font-weight: bold; color: rgb(25, 27, 29); white-space: nowrap;">${data.title}, </span>
+                              <span style="font-family: Arial; font-size: 14px; color: rgb(25, 27, 29); white-space: nowrap;">${data.company}</span>
                             </p>
                           </td>
                         </tr>
