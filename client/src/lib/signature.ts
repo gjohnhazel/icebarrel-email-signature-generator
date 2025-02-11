@@ -49,6 +49,9 @@ export function generateSignatureHTML(data: SignatureData): string {
     .join("");
 
   return `
+  <p style="margin: 0 0 8px;">
+    <img src="https://cdn.shopify.com/s/files/1/0593/8125/2163/files/signoff.png?v=1739309984" alt="Kind regards," style="width: 150px; height: auto;">
+  </p>
     <table style="direction: ltr; border-collapse: collapse;">
       <tr>
         <td style="margin: 0px; font-size: 0px; height: 12px; line-height: 0;"></td>
@@ -73,9 +76,6 @@ export function generateSignatureHTML(data: SignatureData): string {
                           <td style="margin: 0px; padding: 0.01px;">
                             <p style="margin: 0.1px; line-height: 17.28px; font-size: 16px;">
                               <span style="font-family: Arial; font-size: 16px; font-weight: bold; color: rgb(25, 27, 29); letter-spacing: 0px; white-space: nowrap;">${data.name}</span><br>
-                              <p style="margin: 0 0 8px;">
-                                <img src="https://cdn.shopify.com/s/files/1/0593/8125/2163/files/signoff.png?v=1739309984" alt="Kind regards," style="width: 150px; height: auto;">
-                              </p>
                               <span style="font-family: Arial; font-size: 14px; font-weight: normal; color: rgb(25, 27, 29); white-space: nowrap;">${data.title}, </span>
                               <span style="font-family: Arial; font-size: 14px; color: rgb(25, 27, 29); white-space: nowrap;">${data.company}</span>
                             </p>
