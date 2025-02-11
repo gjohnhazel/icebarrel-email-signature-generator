@@ -15,18 +15,18 @@ export default function Home() {
     phone: "",
     logo: "",
     socialLinks: {
-      instagram: "",
-      youtube: "",
-      tiktok: "",
-      apple: "",
-      playstore: ""
+      instagram: "https://www.instagram.com/icebarrel/",
+      youtube: "https://www.youtube.com/channel/UC40pA9GBIVro1iZDRWG8seQ",
+      tiktok: "https://tiktok.com/@icebarrel",
+      apple: "https://apps.apple.com/us/app/ice-barrel/id6448100865",
+      playstore: "https://play.google.com/store/apps/details?id=com.icebarrel&amp;pli=1"
     },
     enabledIcons: {
-      instagram: false,
-      youtube: false,
-      tiktok: false,
-      apple: false,
-      playstore: false
+      instagram: true,
+      youtube: true,
+      tiktok: true,
+      apple: true,
+      playstore: true
     }
   });
 

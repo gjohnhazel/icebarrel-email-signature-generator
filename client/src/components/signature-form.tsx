@@ -185,35 +185,8 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
           <div className="grid gap-4 md:grid-cols-2">
             {socialIcons.map(({ name, icon: Icon, label }) => (
               <div key={name} className="flex items-center space-x-4">
-                <FormField
-                  control={form.control}
-                  name={`enabledIcons.${name}`}
-                  render={({ field }) => (
-                    <FormItem className="flex items-center space-x-2">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <Icon className="h-4 w-4" />
-                      <FormLabel className="!mt-0">{label}</FormLabel>
-                    </FormItem>
-                  )}
-                />
-                {form.watch(`enabledIcons.${name}`) && (
-                  <FormField
-                    control={form.control}
-                    name={`socialLinks.${name}`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormControl>
-                          <Input placeholder={`${label} URL`} {...field} />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                )}
+                <Icon className="h-4 w-4" />
+                <span className="text-sm">{label}</span>
               </div>
             ))}
           </div>
