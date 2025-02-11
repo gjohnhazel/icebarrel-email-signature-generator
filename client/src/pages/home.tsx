@@ -11,7 +11,7 @@ export default function Home() {
     title: "",
     company: "Ice Barrel",
     email: "",
-    website: "",
+    website: "www.icebarrel.com",
     phone: "",
     logo: "https://cdn.shopify.com/s/files/1/0593/8125/2163/files/ice-barrel-logo-rounded.png?v=1739309263",
     socialLinks: {
