@@ -175,18 +175,7 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="website"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Website</FormLabel>
-                <FormControl>
-                  <Input placeholder="https://company.com" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+          
 
           
         </div>
