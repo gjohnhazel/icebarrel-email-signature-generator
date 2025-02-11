@@ -99,40 +99,7 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
     <Form {...form}>
       <form onChange={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
-          <FormItem>
-            <FormLabel>Logo</FormLabel>
-            <FormControl>
-              <div className="space-y-2">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoUpload}
-                  className="cursor-pointer"
-                />
-                {form.watch('logo') && (
-                  <div className="mt-2">
-                    <img 
-                      src={form.watch('logo')} 
-                      alt="Logo preview" 
-                      className="max-w-[200px] max-h-[100px] object-contain"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="mt-2"
-                      onClick={() => {
-                        form.setValue('logo', '');
-                        onUpdate({ ...form.getValues(), logo: '' });
-                      }}
-                    >
-                      Remove Logo
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </FormControl>
-          </FormItem>
+          
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
