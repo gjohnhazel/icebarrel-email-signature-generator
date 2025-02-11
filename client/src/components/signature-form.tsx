@@ -15,7 +15,6 @@ const formSchema = z.object({
   company: z.string(),
   email: z.string().email("Invalid email address"),
   website: z.string().url("Invalid URL").or(z.literal("")),
-  phone: z.string(),
   logo: z.string().optional(),
   socialLinks: z.object({
     instagram: z.string(),
@@ -204,18 +203,7 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="phone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Phone</FormLabel>
-                <FormControl>
-                  <Input placeholder="+1 (555) 123-4567" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+          
         </div>
 
         <div className="space-y-4">
