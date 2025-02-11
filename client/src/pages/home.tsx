@@ -13,7 +13,7 @@ export default function Home() {
     email: "",
     website: "",
     phone: "",
-    logo: "/attached_assets/IceBarrel_Basic_Logo_Dark.png",
+    logo: "/assets/IceBarrel_Basic_Logo_Dark.png",
     socialLinks: {
       instagram: "https://www.instagram.com/icebarrel/",
       youtube: "https://www.youtube.com/channel/UC40pA9GBIVro1iZDRWG8seQ",
