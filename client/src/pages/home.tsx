@@ -34,9 +34,8 @@ export default function Home() {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tighter">Email Signature Generator</h1>
+          <h1 className="text-3xl font-bold tracking-tighter">Ice Barrel Email Signature Generator</h1>
           <p className="text-muted-foreground">
-            Create a professional email signature compatible with major email clients
           </p>
         </div>
 
