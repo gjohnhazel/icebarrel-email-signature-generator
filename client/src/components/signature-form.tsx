@@ -4,31 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useForm } from "react-hook-form";
 import { SignatureData } from "@/lib/signature";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { SiInstagram, SiYoutube, SiTiktok, SiApple, SiGoogleplay } from "react-icons/si";
 import { useToast } from "@/hooks/use-toast";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  title: z.string(),
-  email: z.string().email("Invalid email address"),
-  logo: z.string().optional(),
-  socialLinks: z.object({
-    instagram: z.string(),
-    youtube: z.string(),
-    tiktok: z.string(),
-    apple: z.string(),
-    playstore: z.string()
-  }),
-  enabledIcons: z.object({
-    instagram: z.boolean(),
-    youtube: z.boolean(),
-    tiktok: z.boolean(),
-    apple: z.boolean(),
-    playstore: z.boolean()
-  })
-});
 
 interface SignatureFormProps {
   signatureData: SignatureData;
@@ -38,7 +15,6 @@ interface SignatureFormProps {
 export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
   const { toast } = useToast();
   const form = useForm<SignatureData>({
-    resolver: zodResolver(formSchema),
     defaultValues: signatureData
   });
 
@@ -49,26 +25,6 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
   const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      toast({
-        title: "Invalid file type",
-        description: "Please upload an image file",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Validate file size (max 1MB)
-    if (file.size > 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please upload an image smaller than 1MB",
-        variant: "destructive"
-      });
-      return;
-    }
 
     try {
       const reader = new FileReader();
@@ -98,10 +54,6 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
   return (
     <Form {...form}>
       <form onChange={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="space-y-4">
-          
-        </div>
-
         <div className="grid gap-4 md:grid-cols-2">
           <FormField
             control={form.control}
@@ -141,10 +93,18 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
               </FormItem>
             )}
           />
+        </div>
 
-          
-
-          
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Social Media Links</h3>
+          <div className="grid gap-4 md:grid-cols-2">
+            {socialIcons.map(({ name, icon: Icon, label }) => (
+              <div key={name} className="flex items-center space-x-4">
+                <Icon className="h-4 w-4" />
+                <span className="text-sm">{label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </form>
     </Form>
