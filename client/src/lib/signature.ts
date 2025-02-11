@@ -1,4 +1,3 @@
-
 import { SignatureData } from "@/lib/signature";
 
 export interface SignatureData {
@@ -64,7 +63,7 @@ export function generateSignatureHTML(data: SignatureData): string {
                     <td style="margin: 0px; vertical-align: top; padding: 0.01px 12px 0.01px 1px; width: 70px; text-align: center;">
                       ${data.logo ? `
                         <a href="https://icebarrel.com/" rel="nofollow noreferrer" target="_blank" style="display: block; font-size: 0.1px;">
-                          <img border="0" src="${data.logo}" height="70" width="70" alt="logo" style="width: 70px; vertical-align: middle; border-radius: 4px; height: 70px; border: 0px; display: block;">
+                          <img border="0" src="${data.logo}" width="70" alt="logo" style="width: 70px; height: auto; object-fit: contain; border: 0px; display: block;">
                         </a>
                       ` : ''}
                     </td>
