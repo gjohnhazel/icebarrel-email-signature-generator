@@ -7,6 +7,7 @@ import { SignatureData } from "@/lib/signature";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { SiInstagram, SiYoutube, SiTiktok, SiApple, SiGoogleplay } from "react-icons/si";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -15,6 +16,7 @@ const formSchema = z.object({
   email: z.string().email("Invalid email address"),
   website: z.string().url("Invalid URL").or(z.literal("")),
   phone: z.string(),
+  logo: z.string().optional(),
   socialLinks: z.object({
     instagram: z.string(),
     youtube: z.string(),
@@ -37,6 +39,7 @@ interface SignatureFormProps {
 }
 
 export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
+  const { toast } = useToast();
   const form = useForm<SignatureData>({
     resolver: zodResolver(formSchema),
     defaultValues: signatureData
@@ -44,6 +47,47 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
 
   const onSubmit = (data: SignatureData) => {
     onUpdate(data);
+  };
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validate file size (max 1MB)
+    if (file.size > 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 1MB",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        form.setValue('logo', base64String);
+        onUpdate({ ...form.getValues(), logo: base64String });
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive"
+      });
+    }
   };
 
   const socialIcons = [
@@ -57,6 +101,43 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
   return (
     <Form {...form}>
       <form onChange={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-4">
+          <FormItem>
+            <FormLabel>Logo</FormLabel>
+            <FormControl>
+              <div className="space-y-2">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="cursor-pointer"
+                />
+                {form.watch('logo') && (
+                  <div className="mt-2">
+                    <img 
+                      src={form.watch('logo')} 
+                      alt="Logo preview" 
+                      className="max-w-[200px] max-h-[100px] object-contain"
+                    />
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="mt-2"
+                      onClick={() => {
+                        form.setValue('logo', '');
+                        onUpdate({ ...form.getValues(), logo: '' });
+                      }}
+                    >
+                      Remove Logo
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </FormControl>
+          </FormItem>
+        </div>
+
         <div className="grid gap-4 md:grid-cols-2">
           <FormField
             control={form.control}

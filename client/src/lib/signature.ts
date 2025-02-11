@@ -5,6 +5,7 @@ export interface SignatureData {
   email: string;
   website: string;
   phone: string;
+  logo?: string; // base64 encoded logo
   socialLinks: {
     instagram: string;
     youtube: string;
@@ -47,6 +48,11 @@ export function generateSignatureHTML(data: SignatureData): string {
     <table cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; color: #333333; max-width: 600px;">
       <tr>
         <td style="padding-bottom: 10px;">
+          ${data.logo ? `
+            <div style="padding-bottom: 10px;">
+              <img src="${data.logo}" alt="Company Logo" style="max-width: 200px; max-height: 100px;">
+            </div>
+          ` : ''}
           <div style="font-size: 18px; font-weight: bold; color: #000;">${data.name}</div>
           <div style="font-size: 14px; color: #666;">${data.title}</div>
           <div style="font-size: 14px; color: #666;">${data.company}</div>

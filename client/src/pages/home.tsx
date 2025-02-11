@@ -13,6 +13,7 @@ export default function Home() {
     email: "",
     website: "",
     phone: "",
+    logo: "",
     socialLinks: {
       instagram: "",
       youtube: "",
