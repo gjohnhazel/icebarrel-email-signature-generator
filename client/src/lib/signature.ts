@@ -1,4 +1,6 @@
 
+import { SignatureData } from "@/lib/signature";
+
 export interface SignatureData {
   name: string;
   title: string;
@@ -6,7 +8,7 @@ export interface SignatureData {
   email: string;
   website: string;
   phone: string;
-  logo?: string; // base64 encoded logo
+  logo?: string;
   socialLinks: {
     instagram: string;
     youtube: string;
@@ -24,11 +26,11 @@ export interface SignatureData {
 }
 
 const socialIconUrls = {
-  instagram: "https://cdn-icons-png.flaticon.com/512/1384/1384063.png",
-  youtube: "https://cdn-icons-png.flaticon.com/512/1384/1384060.png",
-  tiktok: "https://cdn-icons-png.flaticon.com/512/3046/3046121.png",
-  apple: "https://cdn-icons-png.flaticon.com/512/831/831276.png",
-  playstore: "https://cdn-icons-png.flaticon.com/512/6124/6124997.png"
+  instagram: "https://cdn.gifo.wisestamp.com/s/inst/191b1d/48/circle/border.png",
+  youtube: "https://cdn.gifo.wisestamp.com/s/yt/191b1d/48/circle/border.png",
+  tiktok: "https://cdn.gifo.wisestamp.com/s/tt/191b1d/48/circle/border.png",
+  apple: "https://cdn.gifo.wisestamp.com/s/ap/191b1d/48/circle/border.png",
+  playstore: "https://cdn.gifo.wisestamp.com/s/gplay/191b1d/48/circle/border.png"
 };
 
 export function generateSignatureHTML(data: SignatureData): string {
@@ -38,41 +40,97 @@ export function generateSignatureHTML(data: SignatureData): string {
       const url = data.socialLinks[platform as keyof typeof data.socialLinks];
       const iconUrl = socialIconUrls[platform as keyof typeof socialIconUrls];
       return `
-        <a href="${url}" style="text-decoration: none; margin-right: 8px;">
-          <img src="${iconUrl}" alt="${platform}" style="width: 20px; height: 20px;">
-        </a>
+        <td align="left" style="margin: 0px; padding-right: 6px; text-align: center; padding-top: 0px;">
+          <a href="${url}" rel="nofollow noreferrer" target="_blank">
+            <img width="24" height="24" src="${iconUrl}" border="0" alt="${platform}" style="float: left; border: none; max-width: 100%; height: auto;">
+          </a>
+        </td>
       `;
     })
     .join("");
 
   return `
-    <table cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif; color: #333333; max-width: 600px;">
+    <table style="direction: ltr; border-collapse: collapse;">
       <tr>
-        <td style="padding-bottom: 10px;">
-          ${data.logo ? `
-            <div style="padding-bottom: 10px;">
-              <img src="${data.logo}" alt="Company Logo" style="max-width: 200px; max-height: 100px;">
-            </div>
-          ` : ''}
-          <div style="font-size: 18px; font-weight: bold; color: #000;">${data.name}</div>
-          <div style="font-size: 14px; color: #666;">${data.title}</div>
-          <div style="font-size: 14px; color: #666;">Ice Barrel</div>
-        </td>
+        <td style="margin: 0px; font-size: 0px; height: 12px; line-height: 0;"></td>
       </tr>
       <tr>
-        <td style="padding-bottom: 10px;">
-          ${data.phone ? `<div style="font-size: 14px;">${data.phone}</div>` : ''}
-          ${data.email ? `<div style="font-size: 14px;"><a href="mailto:${data.email}" style="color: #2563eb; text-decoration: none;">${data.email}</a></div>` : ''}
-          <div style="font-size: 14px;"><a href="https://www.icebarrel.com" style="color: #2563eb; text-decoration: none;">www.icebarrel.com</a></div>
+        <td style="margin: 0px;">
+          <table cellpadding="0" cellspacing="0" style="width: 440px;">
+            <tr>
+              <td>
+                <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; line-height: 1.15;">
+                  <tr>
+                    <td style="margin: 0px; vertical-align: top; padding: 0.01px 12px 0.01px 1px; width: 70px; text-align: center;">
+                      ${data.logo ? `
+                        <a href="https://icebarrel.com/" rel="nofollow noreferrer" target="_blank" style="display: block; font-size: 0.1px;">
+                          <img border="0" src="${data.logo}" height="70" width="70" alt="logo" style="width: 70px; vertical-align: middle; border-radius: 4px; height: 70px; border: 0px; display: block;">
+                        </a>
+                      ` : ''}
+                    </td>
+                    <td valign="top" style="margin: 0px; padding: 0.01px 0.01px 0.01px 12px; vertical-align: top; border-left: 2px solid rgb(25, 27, 29);">
+                      <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+                        <tr>
+                          <td style="margin: 0px; padding: 0.01px;">
+                            <p style="margin: 0.1px; line-height: 17.28px; font-size: 16px;">
+                              <span style="font-family: Arial; font-size: 16px; font-weight: bold; color: rgb(25, 27, 29); letter-spacing: 0px; white-space: nowrap;">${data.name}</span><br>
+                              <span style="font-family: Arial; font-size: 13px; color: rgb(25, 27, 29); white-space: nowrap;">${data.title}, ${data.company}</span>
+                            </p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+                              <tr>
+                                <td nowrap="" style="margin: 0px; padding-top: 12px; white-space: nowrap; font-family: Arial;">
+                                  <p style="margin: 1px; line-height: 10.89px; font-size: 11px;">
+                                    <a href="${data.website}" rel="nofollow noreferrer" target="_blank" style="font-family: Arial; text-decoration: unset;">
+                                      <span style="line-height: 13.2px; font-family: Arial; font-size: 11px; color: rgb(25, 27, 29); white-space: nowrap;">www.icebarrel.com</span>
+                                    </a>
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                                    <a href="mailto:${data.email}" rel="nofollow noreferrer" target="_blank" style="font-family: Arial; text-decoration: unset;">
+                                      <span style="line-height: 13.2px; font-family: Arial; font-size: 11px; color: rgb(25, 27, 29); white-space: nowrap;">${data.email}</span>
+                                    </a>
+                                  </p>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="margin: 0px; padding: 12px 0.01px 0.01px;">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                              <tr>
+                                ${socialIcons}
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="margin: 0px; line-height: 0.01px; padding-top: 16px; font-size: 1px;"></td>
+            </tr>
+            <tr>
+              <td>
+                <table cellpadding="0" cellspacing="0" width="100%" style="width: 440px; color: gray; border-top: 1px solid gray; line-height: normal;">
+                  <tr>
+                    <td style="margin: 0px; padding: 9px 8px 0px 0px;">
+                      <p style="color: rgb(136, 136, 136); text-align: left; font-size: 10px; margin: 1px; line-height: 12px; font-family: Arial;">
+                        IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
         </td>
       </tr>
-      ${socialIcons ? `
-        <tr>
-          <td style="padding-top: 10px; border-top: 1px solid #eee;">
-            ${socialIcons}
-          </td>
-        </tr>
-      ` : ''}
     </table>
   `;
 }
