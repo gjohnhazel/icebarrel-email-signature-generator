@@ -1,3 +1,4 @@
+
 export interface SignatureData {
   name: string;
   title: string;
@@ -63,9 +64,8 @@ export function generateSignatureHTML(data: SignatureData): string {
           ${data.phone ? `<div style="font-size: 14px;">${data.phone}</div>` : ''}
           ${data.email ? `<div style="font-size: 14px;"><a href="mailto:${data.email}" style="color: #2563eb; text-decoration: none;">${data.email}</a></div>` : ''}
           <div style="font-size: 14px;"><a href="https://www.icebarrel.com" style="color: #2563eb; text-decoration: none;">www.icebarrel.com</a></div>
-          </td>
-        </tr>
-      ` : ''}
+        </td>
+      </tr>
       ${socialIcons ? `
         <tr>
           <td style="padding-top: 10px; border-top: 1px solid #eee;">
