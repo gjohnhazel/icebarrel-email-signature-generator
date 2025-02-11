@@ -55,15 +55,14 @@ export function generateSignatureHTML(data: SignatureData): string {
           ` : ''}
           <div style="font-size: 18px; font-weight: bold; color: #000;">${data.name}</div>
           <div style="font-size: 14px; color: #666;">${data.title}</div>
-          <div style="font-size: 14px; color: #666;">${data.company}</div>
+          <div style="font-size: 14px; color: #666;">Ice Barrel</div>
         </td>
       </tr>
-      ${data.phone || data.email || data.website ? `
-        <tr>
-          <td style="padding-bottom: 10px;">
-            ${data.phone ? `<div style="font-size: 14px;">${data.phone}</div>` : ''}
-            ${data.email ? `<div style="font-size: 14px;"><a href="mailto:${data.email}" style="color: #2563eb; text-decoration: none;">${data.email}</a></div>` : ''}
-            ${data.website ? `<div style="font-size: 14px;"><a href="${data.website}" style="color: #2563eb; text-decoration: none;">${data.website}</a></div>` : ''}
+      <tr>
+        <td style="padding-bottom: 10px;">
+          ${data.phone ? `<div style="font-size: 14px;">${data.phone}</div>` : ''}
+          ${data.email ? `<div style="font-size: 14px;"><a href="mailto:${data.email}" style="color: #2563eb; text-decoration: none;">${data.email}</a></div>` : ''}
+          <div style="font-size: 14px;"><a href="https://www.icebarrel.com" style="color: #2563eb; text-decoration: none;">www.icebarrel.com</a></div>
           </td>
         </tr>
       ` : ''}

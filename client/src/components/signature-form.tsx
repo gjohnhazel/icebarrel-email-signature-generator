@@ -12,9 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   title: z.string(),
-  company: z.string(),
   email: z.string().email("Invalid email address"),
-  website: z.string().url("Invalid URL").or(z.literal("")),
   logo: z.string().optional(),
   socialLinks: z.object({
     instagram: z.string(),
@@ -159,19 +157,6 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
                 <FormLabel>Title</FormLabel>
                 <FormControl>
                   <Input placeholder="Chief of Staff" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="company"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Company</FormLabel>
-                <FormControl>
-                  <Input placeholder="Ice Barrel" {...field} />
                 </FormControl>
               </FormItem>
             )}
