@@ -3,6 +3,7 @@ import { generateSignatureHTML } from "@/lib/signature";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
+import AspectRatio from "@/components/ui/aspect-ratio"; // Assuming this component exists
 
 interface SignaturePreviewProps {
   signatureData: SignatureData;
