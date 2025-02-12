@@ -69,7 +69,8 @@ jobs:
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && \
           source ~/.nvm/nvm.sh && \
           nvm install 18 && \
-          nvm use 18"
+          nvm use 18 && \
+          npm install -g pm2"
         
         # Deploy entire dist folder (both client and server)
         rsync -avz --delete ./dist/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
@@ -80,5 +81,5 @@ jobs:
         # Install production dependencies on server
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "source ~/.nvm/nvm.sh && cd /home/ec2-user/email && npm ci --production"
         
-        # Restart the application (assuming you're using PM2 or similar)
+        # Restart the application using PM2
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "source ~/.nvm/nvm.sh && cd /home/ec2-user/email && pm2 restart email || pm2 start index.js --name 'email'"
