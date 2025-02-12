@@ -65,6 +65,12 @@ jobs:
         # Create deployment directory
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "mkdir -p /home/ec2-user/email"
         
+        # Install Node.js and npm if not already installed
+        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && \
+          source ~/.nvm/nvm.sh && \
+          nvm install 18 && \
+          nvm use 18"
+        
         # Deploy entire dist folder (both client and server)
         rsync -avz --delete ./dist/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
         
@@ -72,7 +78,7 @@ jobs:
         rsync -avz package.json package-lock.json ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
         
         # Install production dependencies on server
-        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ec2-user/email && npm ci --production"
+        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "source ~/.nvm/nvm.sh && cd /home/ec2-user/email && npm ci --production"
         
         # Restart the application (assuming you're using PM2 or similar)
-        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ec2-user/email && pm2 restart email || pm2 start index.js --name 'email'"
+        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "source ~/.nvm/nvm.sh && cd /home/ec2-user/email && pm2 restart email || pm2 start index.js --name 'email'"
