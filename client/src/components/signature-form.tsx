@@ -62,7 +62,11 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="name@icebarrel.com" {...field} />
+                  <Input 
+                    placeholder="name@icebarrel.com" 
+                    className="rounded-md border-gray-200/80 placeholder:text-gray-400/80"
+                    {...field} 
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -75,7 +79,11 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input 
+                    placeholder="John Doe" 
+                    className="rounded-md border-gray-200/80 placeholder:text-gray-400/80"
+                    {...field} 
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -88,7 +96,11 @@ export function SignatureForm({ signatureData, onUpdate }: SignatureFormProps) {
               <FormItem>
                 <FormLabel>Title</FormLabel>
                 <FormControl>
-                  <Input placeholder="Chief of Staff" {...field} />
+                  <Input 
+                    placeholder="Chief of Staff" 
+                    className="rounded-md border-gray-200/80 placeholder:text-gray-400/80"
+                    {...field} 
+                  />
                 </FormControl>
               </FormItem>
             )}

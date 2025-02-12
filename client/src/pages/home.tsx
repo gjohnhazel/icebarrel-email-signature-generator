@@ -39,12 +39,12 @@ export default function Home() {
           </p>
         </div>
 
-        <Card>
+        <Card className="border border-gray-200/80 rounded-lg">
           <CardContent className="p-6">
             <Tabs defaultValue="edit" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="edit">Edit Signature</TabsTrigger>
-                <TabsTrigger value="preview">Preview</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 rounded-md bg-gray-100/50">
+                <TabsTrigger value="edit" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Edit Signature</TabsTrigger>
+                <TabsTrigger value="preview" className="rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm">Preview</TabsTrigger>
               </TabsList>
 
               <TabsContent value="edit" className="space-y-4">

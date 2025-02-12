@@ -32,12 +32,15 @@ export function SignaturePreview({ signatureData }: SignaturePreviewProps) {
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button onClick={copyToClipboard}>
+        <Button 
+          onClick={copyToClipboard}
+          className="bg-blue-600 text-white rounded-md hover:bg-blue-600/90 transition-colors"
+        >
           Copy Signature
         </Button>
       </div>
 
-      <Card>
+      <Card className="border border-gray-200/80 rounded-lg">
         <CardContent className="p-6">
           <div
             dangerouslySetInnerHTML={{
