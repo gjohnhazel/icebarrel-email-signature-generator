@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 env:
-  AWS_REGION: us-east-2a # Ohio region
+  AWS_REGION: us-east-2 # Ohio region
 
 jobs:
   deploy:
@@ -36,14 +36,14 @@ jobs:
           exit 1
         fi
 
-        # Verify build directory exists and contains files
-        if [ ! -d "build" ]; then
-          echo "Build directory does not exist"
+        # Verify dist/public directory exists and contains files
+        if [ ! -d "dist/public" ]; then
+          echo "dist/public directory does not exist"
           exit 1
         fi
 
-        if [ -z "$(ls -A build)" ]; then
-          echo "Build directory is empty"
+        if [ -z "$(ls -A dist/public)" ]; then
+          echo "dist/public directory is empty"
           exit 1
         fi
 
@@ -64,14 +64,14 @@ jobs:
         # Add Lightsail host to known_hosts
         ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts
 
-        # Debug: List contents of current directory and build directory
+        # Debug: List contents of current directory and dist directory
         echo "Current directory contents:"
         ls -la
-        echo "Build directory contents:"
-        ls -la build
+        echo "dist/public directory contents:"
+        ls -la dist/public
 
         # Ensure target directory exists
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "mkdir -p /home/ec2-user/email"
 
-        # Deploy build folder to Lightsail
-        rsync -avz --delete ./build/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
+        # Deploy dist/public folder to Lightsail
+        rsync -avz --delete ./dist/public/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
