@@ -1,0 +1,50 @@
+name: Deploy React to Lightsail
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-2 # Ohio region
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Build React App
+      run: npm run build
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Install SSH key
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+
+    - name: Deploy to Lightsail
+      run: |
+        # Add Lightsail host to known_hosts
+        ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts
+
+        # Ensure target directory exists
+        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "mkdir -p /home/ec2-user/email"
+
+        # Deploy build folder to Lightsail
+        rsync -avz --delete ./build/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
