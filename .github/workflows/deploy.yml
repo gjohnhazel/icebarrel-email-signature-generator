@@ -1,11 +1,11 @@
-name: Deploy React to Lightsail
+name: Deploy Email Signature Generator
 
 on:
   push:
     branches: [ main ]
 
 env:
-  AWS_REGION: us-east-2 # Ohio region
+  AWS_REGION: us-east-2
 
 jobs:
   deploy:
@@ -21,29 +21,27 @@ jobs:
         cache: 'npm'
 
     - name: Install Dependencies
-      run: |
-        npm ci
-        if [ $? -ne 0 ]; then
-          echo "Failed to install dependencies"
-          exit 1
-        fi
+      run: npm ci
 
-    - name: Build React App
+    - name: Build Application
       run: |
+        # Build both client and server
         npm run build
-        if [ $? -ne 0 ]; then
-          echo "Failed to build React app"
+        
+        # Verify build output
+        if [ ! -d "dist" ]; then
+          echo "dist directory does not exist"
           exit 1
         fi
-
-        # Verify dist/public directory exists and contains files
+        
+        # Check for both client and server builds
         if [ ! -d "dist/public" ]; then
           echo "dist/public directory does not exist"
           exit 1
         fi
-
-        if [ -z "$(ls -A dist/public)" ]; then
-          echo "dist/public directory is empty"
+        
+        if [ ! -f "dist/index.js" ]; then
+          echo "Server build (dist/index.js) does not exist"
           exit 1
         fi
 
@@ -63,15 +61,18 @@ jobs:
       run: |
         # Add Lightsail host to known_hosts
         ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts
-
-        # Debug: List contents of current directory and dist directory
-        echo "Current directory contents:"
-        ls -la
-        echo "dist/public directory contents:"
-        ls -la dist/public
-
-        # Ensure target directory exists
+        
+        # Create deployment directory
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "mkdir -p /home/ec2-user/email"
-
-        # Deploy dist/public folder to Lightsail
-        rsync -avz --delete ./dist/public/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
+        
+        # Deploy entire dist folder (both client and server)
+        rsync -avz --delete ./dist/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
+        
+        # Copy package files for production dependencies
+        rsync -avz package.json package-lock.json ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
+        
+        # Install production dependencies on server
+        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ec2-user/email && npm ci --production"
+        
+        # Restart the application (assuming you're using PM2 or similar)
+        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ec2-user/email && pm2 restart email || pm2 start index.js --name 'email'"
