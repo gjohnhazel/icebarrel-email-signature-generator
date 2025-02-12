@@ -1,5 +1,4 @@
-import { SignatureData } from "@/lib/signature";
-
+// Remove the self-import since we're defining SignatureData here
 export interface SignatureData {
   name: string;
   title: string;
@@ -135,5 +134,52 @@ export function generateSignatureHTML(data: SignatureData): string {
         </td>
       </tr>
     </table>
+  `;
+}
+
+export function generateGmailSignatureHTML(data: SignatureData): string {
+  const socialIcons = Object.entries(data.enabledIcons)
+    .filter(([_, enabled]) => enabled)
+    .map(([platform]) => {
+      const url = data.socialLinks[platform as keyof typeof data.socialLinks];
+      const iconUrl = socialIconUrls[platform as keyof typeof socialIconUrls];
+      return `<td style="padding-right: 8px;"><a href="${url}" style="text-decoration: none; display: inline-block;" target="_blank"><img src="${iconUrl}" width="24" height="24" style="border: 0; display: block;" alt="${platform}"></a></td>`;
+    })
+    .join('');
+
+  return `
+    <div style="font-family: Arial, sans-serif; font-size: 14px; color: #191b1d;">
+      <p style="margin: 0 0 8px;">
+        <img src="https://cdn.shopify.com/s/files/1/0593/8125/2163/files/signoff.png?v=1739309984" alt="Kind regards," style="width: 150px; height: auto;">
+      </p>
+      <table style="border-collapse: collapse; margin: 0; padding: 0;">
+        <tr>
+          <td style="vertical-align: top; padding-right: 12px;">
+            ${data.logo ? `<a href="https://icebarrel.com/" style="display: block;" target="_blank">
+              <img src="${data.logo}" width="70" style="width: 70px; height: auto; border: 0;" alt="Ice Barrel Logo">
+            </a>` : ''}
+          </td>
+          <td style="vertical-align: top; padding-left: 12px; border-left: 2px solid #191b1d;">
+            <div style="margin-bottom: 4px;">
+              <strong style="font-size: 16px; color: #191b1d;">${data.name}</strong><br>
+              <span style="font-size: 14px; color: #191b1d;">${data.title}${data.title ? ', ' : ''}${data.company}</span>
+            </div>
+            <div style="margin: 8px 0; font-size: 11px;">
+              <a href="${data.website}" style="color: #191b1d; text-decoration: none;" target="_blank">www.icebarrel.com</a>
+              &nbsp;&nbsp;|&nbsp;&nbsp;
+              <a href="mailto:${data.email}" style="color: #191b1d; text-decoration: none;">${data.email}</a>
+            </div>
+            <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-top: 8px;">
+              <tr>
+                ${socialIcons}
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <div style="margin-top: 16px; padding-top: 8px; border-top: 1px solid #888; font-size: 10px; color: #888;">
+        IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.
+      </div>
+    </div>
   `;
 }

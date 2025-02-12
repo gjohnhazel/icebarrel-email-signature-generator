@@ -1,9 +1,8 @@
 import { SignatureData } from "@/lib/signature";
-import { generateSignatureHTML } from "@/lib/signature";
+import { generateSignatureHTML, generateGmailSignatureHTML } from "@/lib/signature";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
-import AspectRatio from "@/components/ui/aspect-ratio"; // Assuming this component exists
 
 interface SignaturePreviewProps {
   signatureData: SignatureData;
@@ -12,13 +11,51 @@ interface SignaturePreviewProps {
 export function SignaturePreview({ signatureData }: SignaturePreviewProps) {
   const { toast } = useToast();
 
-  const copyToClipboard = async () => {
+  const copyToClipboard = async (isGmail: boolean = false) => {
     try {
-      const html = generateSignatureHTML(signatureData);
+      const html = isGmail ? generateGmailSignatureHTML(signatureData) : generateSignatureHTML(signatureData);
       await navigator.clipboard.writeText(html);
       toast({
         title: "Copied!",
-        description: "Signature has been copied to clipboard",
+        description: `Signature has been copied${isGmail ? ' (Gmail format)' : ''}`,
+      });
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to copy signature",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const copyAsRichText = async () => {
+    try {
+      // Create a hidden div with the signature content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = generateGmailSignatureHTML(signatureData);
+      document.body.appendChild(tempDiv);
+      
+      // Select the content
+      const range = document.createRange();
+      range.selectNode(tempDiv);
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+      
+      // Execute copy command to copy rich text
+      document.execCommand('copy');
+      
+      // Clean up
+      document.body.removeChild(tempDiv);
+      if (selection) {
+        selection.removeAllRanges();
+      }
+      
+      toast({
+        title: "Copied!",
+        description: "Signature copied as rich text for Gmail",
       });
     } catch (err) {
       toast({
@@ -31,12 +68,18 @@ export function SignaturePreview({ signatureData }: SignaturePreviewProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
         <Button 
-          onClick={copyToClipboard}
+          onClick={copyAsRichText}
           className="bg-blue-600 text-white rounded-md hover:bg-blue-600/90 transition-colors"
         >
-          Copy Signature
+          Copy for Gmail
+        </Button>
+        <Button 
+          onClick={() => copyToClipboard(false)}
+          className="bg-blue-600 text-white rounded-md hover:bg-blue-600/90 transition-colors"
+        >
+          Copy HTML
         </Button>
       </div>
 
