@@ -83,12 +83,13 @@ jobs:
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ec2-user/app && \
           source ~/.nvm/nvm.sh && \
           npm ci --omit=dev && \
-          pm2 restart email-signature || pm2 start ecosystem.config.cjs"
+          pm2 restart email-signature || pm2 start ecosystem.config.cjs && \
+          pm2 save"
 
     - name: Verify Deployment
       run: |
         # Wait for the application to start
         sleep 10
         
-        # Check if the application is responding
-        curl --fail -H "Host: email.icebarrelautomations.com" http://${{ secrets.LIGHTSAIL_HOST }} || exit 1
+        # Check if the application is responding (follow redirects and accept insecure SSL)
+        curl --fail -L -k -H "Host: email.icebarrelautomations.com" https://${{ secrets.LIGHTSAIL_HOST }} || exit 1
