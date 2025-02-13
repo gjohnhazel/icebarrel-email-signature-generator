@@ -62,6 +62,20 @@ app.use((req, res, next) => {
 
   const PORT = process.env.PORT || 80;
   server.listen(PORT, "0.0.0.0", () => {
-    log(`serving on port ${PORT}`);
+    log(`Server started in ${app.get("env")} mode`);
+    log(`Listening on http://0.0.0.0:${PORT}`);
+    log(`Press CTRL+C to stop`);
+  });
+
+  // Log uncaught exceptions
+  process.on('uncaughtException', (error) => {
+    log(`Uncaught Exception: ${error.message}`, 'error');
+    console.error(error);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason, promise) => {
+    log(`Unhandled Rejection at: ${promise}, reason: ${reason}`, 'error');
+    console.error(reason);
   });
 })();
