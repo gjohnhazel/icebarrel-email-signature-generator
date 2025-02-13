@@ -54,6 +54,10 @@ app.use((req, res, next) => {
     await setupVite(app, server);
   } else {
     serveStatic(app);
+    // Ensure all routes fall back to index.html for client-side routing
+    app.get('*', (req, res) => {
+      res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+    });
   }
 
   const PORT = process.env.PORT || 80;
