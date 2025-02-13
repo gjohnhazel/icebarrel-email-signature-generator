@@ -11,7 +11,8 @@ env:
   NODE_VERSION: '18'
 
 jobs:
-  test:
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     
     steps:
@@ -29,31 +30,29 @@ jobs:
     - name: Type Check
       run: npm run check
 
-    # Add test step here when you have tests
-    # - name: Run Tests
-    #   run: npm test
-
-  deploy:
-    needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-
-    - name: Install Dependencies
-      run: npm ci
-
     - name: Build Application
       run: npm run build
       env:
         NODE_ENV: production
+
+    - name: Create PM2 ecosystem file
+      run: |
+        cat > ecosystem.config.js << EOF
+        module.exports = {
+          apps: [{
+            name: 'email-signature',
+            script: 'index.js',
+            instances: 1,
+            autorestart: true,
+            watch: false,
+            max_memory_restart: '1G',
+            env: {
+              NODE_ENV: 'production',
+              PORT: 3000
+            }
+          }]
+        }
+        EOF
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
@@ -78,13 +77,13 @@ jobs:
         rsync -avz --delete ./dist/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/app/
         
         # Copy package files and ecosystem config
-        rsync -avz package.json package-lock.json ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/app/
+        rsync -avz package.json package-lock.json ecosystem.config.js ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/app/
         
         # Install production dependencies and restart application
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ec2-user/app && \
           source ~/.nvm/nvm.sh && \
           npm ci --production && \
-          pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js"
+          pm2 restart email-signature || pm2 start ecosystem.config.js"
 
     - name: Verify Deployment
       run: |
