@@ -35,10 +35,10 @@ sudo dnf install -y nginx
 echo "Installing PM2..."
 npm install -y pm2 -g
 
-# Create app directory and set permissions
+# Create app directory structure
 echo "Setting up application directory..."
-sudo mkdir -p /home/ec2-user/app
-sudo chown ec2-user:ec2-user /home/ec2-user/app
+sudo mkdir -p /home/ec2-user/app/public
+sudo chown -R ec2-user:ec2-user /home/ec2-user/app
 
 # Configure Nginx with better security headers
 echo "Configuring Nginx..."
@@ -108,7 +108,7 @@ sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u ec2-user --hp /home/ec2-user
 
 # Create a basic ecosystem file for PM2
 echo "Creating PM2 ecosystem file..."
-cat > /home/ec2-user/app/ecosystem.config.js << EOF
+cat > /home/ec2-user/app/ecosystem.config.cjs << EOF
 module.exports = {
   apps: [{
     name: 'email-signature',
@@ -119,7 +119,8 @@ module.exports = {
     max_memory_restart: '1G',
     env: {
       NODE_ENV: 'production',
-      PORT: 3000
+      PORT: 3000,
+      DATABASE_URL: process.env.DATABASE_URL
     }
   }]
 }

@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import path from "path";
 
 const app = express();
 app.use(express.json());
@@ -54,16 +55,11 @@ app.use((req, res, next) => {
     await setupVite(app, server);
   } else {
     serveStatic(app);
-    // Ensure all routes fall back to index.html for client-side routing
-    app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
-    });
   }
 
   const PORT = process.env.PORT || 80;
   server.listen(PORT, "0.0.0.0", () => {
-    log(`Server started in ${app.get("env")} mode`);
-    log(`Listening on http://0.0.0.0:${PORT}`);
+    log(`Server started in ${app.get("env")} mode on port ${PORT}`);
     log(`Press CTRL+C to stop`);
   });
 

@@ -18,6 +18,7 @@ This guide explains how to deploy the Email Signature Generator to an Amazon Lin
 
 2. Clone this repository:
    ```bash
+   sudo dnf install git
    git clone https://github.com/gjohnhazel/icebarrel-email-signature-generator.git
    cd icebarrel-email-signature-generator
    ```
