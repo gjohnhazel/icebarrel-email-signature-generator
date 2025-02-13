@@ -37,7 +37,7 @@ jobs:
 
     - name: Create PM2 ecosystem file
       run: |
-        cat > ecosystem.config.js << EOF
+        cat > ecosystem.config.cjs << EOF
         module.exports = {
           apps: [{
             name: 'email-signature',
@@ -77,13 +77,13 @@ jobs:
         rsync -avz --delete ./dist/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/app/
         
         # Copy package files and ecosystem config
-        rsync -avz package.json package-lock.json ecosystem.config.js ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/app/
+        rsync -avz package.json package-lock.json ecosystem.config.cjs ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/app/
         
         # Install production dependencies and restart application
         ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ec2-user/app && \
           source ~/.nvm/nvm.sh && \
-          npm ci --production && \
-          pm2 restart email-signature || pm2 start ecosystem.config.js"
+          npm ci --omit=dev && \
+          pm2 restart email-signature || pm2 start ecosystem.config.cjs"
 
     - name: Verify Deployment
       run: |
