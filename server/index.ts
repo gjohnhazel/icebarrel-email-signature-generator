@@ -56,7 +56,7 @@ app.use((req, res, next) => {
     serveStatic(app);
     // Ensure all routes fall back to index.html for client-side routing
     app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+      res.sendFile(path.resolve(__dirname, '../dist/public/index.html'));
     });
   }
 
