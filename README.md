@@ -135,3 +135,5 @@ For issues or questions:
 1. Check the application logs: `pm2 logs email-signature`
 2. Review Nginx logs: `sudo tail -f /var/log/nginx/error.log`
 3. Open an issue in the GitHub repository 
+
+Thanks!
