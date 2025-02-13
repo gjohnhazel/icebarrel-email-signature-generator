@@ -11,12 +11,19 @@ sudo dnf update -y
 
 # Install development tools and required packages
 echo "Installing required packages..."
-sudo dnf install -y curl git
+sudo dnf install -y git wget
 
 # Install Node.js using nvm for better version management
 echo "Installing Node.js..."
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-source ~/.nvm/nvm.sh
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Reload shell environment
+source ~/.bashrc
+
+# Install Node.js
 nvm install 18
 nvm alias default 18
 
