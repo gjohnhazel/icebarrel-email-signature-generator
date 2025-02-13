@@ -3,83 +3,93 @@ name: Deploy Email Signature Generator
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 env:
   AWS_REGION: us-east-2
+  NODE_VERSION: '18'
 
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Type Check
+      run: npm run check
+
+    # Add test step here when you have tests
+    # - name: Run Tests
+    #   run: npm test
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
 
     - name: Install Dependencies
       run: npm ci
 
     - name: Build Application
-      run: |
-        # Build both client and server
-        npm run build
-        
-        # Verify build output
-        if [ ! -d "dist" ]; then
-          echo "dist directory does not exist"
-          exit 1
-        fi
-        
-        # Check for both client and server builds
-        if [ ! -d "dist/public" ]; then
-          echo "dist/public directory does not exist"
-          exit 1
-        fi
-        
-        if [ ! -f "dist/index.js" ]; then
-          echo "Server build (dist/index.js) does not exist"
-          exit 1
-        fi
+      run: npm run build
+      env:
+        NODE_ENV: production
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
     - name: Install SSH key
-      uses: webfactory/ssh-agent@v0.7.0
+      uses: webfactory/ssh-agent@v0.9.0
       with:
         ssh-private-key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
 
+    - name: Add host to known_hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts
+
     - name: Deploy to Lightsail
       run: |
-        # Add Lightsail host to known_hosts
-        ssh-keyscan -H ${{ secrets.LIGHTSAIL_HOST }} >> ~/.ssh/known_hosts
+        # Deploy the application
+        rsync -avz --delete ./dist/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/app/
         
-        # Create deployment directory
-        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "mkdir -p /home/ec2-user/email"
+        # Copy package files and ecosystem config
+        rsync -avz package.json package-lock.json ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/app/
         
-        # Install Node.js and npm if not already installed
-        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash && \
+        # Install production dependencies and restart application
+        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "cd /home/ec2-user/app && \
           source ~/.nvm/nvm.sh && \
-          nvm install 18 && \
-          nvm use 18 && \
-          npm install -g pm2"
+          npm ci --production && \
+          pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js"
+
+    - name: Verify Deployment
+      run: |
+        # Wait for the application to start
+        sleep 10
         
-        # Deploy entire dist folder (both client and server)
-        rsync -avz --delete ./dist/ ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
-        
-        # Copy package files for production dependencies
-        rsync -avz package.json package-lock.json ec2-user@${{ secrets.LIGHTSAIL_HOST }}:/home/ec2-user/email/
-        
-        # Install production dependencies on server
-        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "source ~/.nvm/nvm.sh && cd /home/ec2-user/email && npm ci --production"
-        
-        # Restart the application using PM2
-        ssh ec2-user@${{ secrets.LIGHTSAIL_HOST }} "source ~/.nvm/nvm.sh && cd /home/ec2-user/email && pm2 restart email || pm2 start index.js --name 'email'"
+        # Check if the application is responding
+        curl --fail -H "Host: email.icebarrelautomations.com" http://${{ secrets.LIGHTSAIL_HOST }} || exit 1
