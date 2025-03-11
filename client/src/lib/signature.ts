@@ -154,7 +154,7 @@ export function generateGmailSignatureHTML(data: SignatureData): string {
     <tbody>
       <tr>
         <td style="padding: 0;">
-          <img src="https://d36urhup7zbd7q.cloudfront.net/6521285898797056/5144592697917440/3fee897d-5421-46d0-8e5d-3d9cd3dfd70b/signoff.gif?ck=1706898871.58" alt="Kind regards," height="38" style="height: 38px; display: block; max-width: 180px;">
+          <img src="https://d36urhup7zbd7q.cloudfront.net/6521285898797056/5144592697917440/3fee897d-5421-46d0-8e5d-3d9cd3dfd70b/signoff.gif?ck=1706898871.58" alt="Kind regards," height="38" style="height: 62px; display: block; max-width: 180px;">
         </td>
       </tr>
       <tr>
@@ -194,7 +194,7 @@ export function generateGmailSignatureHTML(data: SignatureData): string {
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding-top: 12px;">
+                        <td style="padding-top: 12px; padding-bottom:15px;">
                           <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; margin-top: 6px;">
                             <tbody>
                               <tr>
@@ -213,7 +213,7 @@ export function generateGmailSignatureHTML(data: SignatureData): string {
         </td>
       </tr>
       <tr>
-        <td style="padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
+        <td style="padding-top: 10px; border-top: 1px solid #e5e7eb;">
           <p style="color: #4B5563; font-size: 11px; line-height: 16px; margin-top: 16px; margin-bottom: 0;">
             IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.
           </p>
