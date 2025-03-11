@@ -195,9 +195,11 @@ export function generateGmailSignatureHTML(data: SignatureData): string {
                       </tr>
                       <tr>
                         <td style="padding-top: 12px;">
-                          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; margin-top: 6px;">
                             <tbody>
-                              <tr>${socialIcons}</tr>
+                              <tr>
+                                ${socialIcons}
+                              </tr>
                             </tbody>
                           </table>
                         </td>
@@ -211,19 +213,10 @@ export function generateGmailSignatureHTML(data: SignatureData): string {
         </td>
       </tr>
       <tr>
-        <td style="padding-top: 16px;"></td>
-      </tr>
-      <tr>
-        <td style="padding: 0; border-top: 1px solid #888888;">
-          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; min-width: 100%;">
-            <tbody>
-              <tr>
-                <td style="padding: 9px 0 0 0; font-family: Arial; font-size: 10px; line-height: 12px; color: #888888;">
-                  IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <td style="padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
+          <p style="color: #4B5563; font-size: 11px; line-height: 16px; margin-top: 16px; margin-bottom: 0;">
+            IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.
+          </p>
         </td>
       </tr>
     </tbody>

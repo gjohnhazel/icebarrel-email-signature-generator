@@ -35,9 +35,10 @@ export function SignaturePreview({ signatureData }: SignaturePreviewProps) {
       iframe.style.position = 'fixed';
       iframe.style.top = '0';
       iframe.style.left = '0';
-      iframe.style.width = '2px';
-      iframe.style.height = '2px';
+      iframe.style.width = '500px';  // Wider to avoid word wrapping
+      iframe.style.height = '500px'; // Taller to fit all content
       iframe.style.opacity = '0.01';
+      iframe.style.pointerEvents = 'none';
       document.body.appendChild(iframe);
       
       // Wait for iframe to be ready
@@ -52,9 +53,10 @@ export function SignaturePreview({ signatureData }: SignaturePreviewProps) {
             <html>
               <head>
                 <style>
-                  body { margin: 0; padding: 0; }
+                  body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
                   table { border-collapse: collapse; }
                   * { box-sizing: border-box; }
+                  img { display: block; }
                 </style>
               </head>
               <body>${generateGmailSignatureHTML(signatureData)}</body>
