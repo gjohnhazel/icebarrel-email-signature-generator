@@ -37,58 +37,80 @@ export function SignaturePreview({ signatureData }: SignaturePreviewProps) {
       iframe.style.left = '0';
       iframe.style.width = '500px';  // Wider to avoid word wrapping
       iframe.style.height = '500px'; // Taller to fit all content
-      iframe.style.opacity = '0.01';
-      iframe.style.pointerEvents = 'none';
+      iframe.style.opacity = '0';
       document.body.appendChild(iframe);
-      
-      // Wait for iframe to be ready
-      iframe.onload = () => {
-        try {
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-          if (!iframeDoc) throw new Error("Could not access iframe document");
-          
-          // Add content to iframe with preserved styles
-          iframeDoc.open();
-          iframeDoc.write(`
-            <html>
-              <head>
-                <style>
-                  body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
-                  table { border-collapse: collapse; }
-                  * { box-sizing: border-box; }
-                  img { display: block; }
-                </style>
-              </head>
-              <body>${generateGmailSignatureHTML(signatureData)}</body>
-            </html>
-          `);
-          iframeDoc.close();
-          
-          // Select the content
-          const range = iframeDoc.createRange();
-          range.selectNodeContents(iframeDoc.body);
-          const selection = iframeDoc.getSelection();
-          if (selection) {
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }
-          
-          // Execute copy command
-          iframeDoc.execCommand('copy');
-          
-          // Clean up
-          document.body.removeChild(iframe);
-          
+
+      // Make sure iframe is loaded before proceeding
+      const iframeLoad = new Promise<void>((resolve) => {
+        iframe.onload = () => resolve();
+      });
+
+      // Set initial content
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!iframeDoc) throw new Error("Could not access iframe document");
+
+      // Add content to iframe with preserved styles
+      iframeDoc.open();
+      iframeDoc.write(`
+        <html>
+          <head>
+            <style>
+              body { margin: 0; padding: 0; font-family: Arial, sans-serif; }
+              table { border-collapse: collapse; }
+              * { box-sizing: border-box; }
+              img { display: block; }
+            </style>
+          </head>
+          <body>${generateGmailSignatureHTML(signatureData)}</body>
+        </html>
+      `);
+      iframeDoc.close();
+
+      // Wait for iframe to fully load
+      await iframeLoad;
+
+      // Use modern clipboard API if available
+      try {
+        // Get HTML content from iframe
+        const htmlContent = iframeDoc.body.innerHTML;
+
+        // Create a Blob with the HTML content
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const data = [new ClipboardItem({ 'text/html': blob })];
+
+        // Write to clipboard using the modern Clipboard API
+        await navigator.clipboard.write(data);
+
+        toast({
+          title: "Copied!",
+          description: "Signature copied as rich text for Gmail",
+        });
+      } catch (clipboardError) {
+        // Fallback to selection-based copying
+        const range = iframeDoc.createRange();
+        range.selectNodeContents(iframeDoc.body);
+
+        const selection = window.getSelection();
+        if (selection) {
+          selection.removeAllRanges();
+          selection.addRange(range);
+
+          // Try to execute copy command
+          document.execCommand('copy');
+
           toast({
             title: "Copied!",
             description: "Signature copied as rich text for Gmail",
           });
-        } catch (error) {
-          document.body.removeChild(iframe);
-          throw error;
+        } else {
+          throw new Error("Could not select content");
         }
-      };
+      } finally {
+        // Clean up
+        document.body.removeChild(iframe);
+      }
     } catch (err) {
+      console.error("Copy error:", err);
       toast({
         title: "Error",
         description: "Failed to copy signature",
