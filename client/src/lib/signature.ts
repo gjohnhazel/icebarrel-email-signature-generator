@@ -154,11 +154,11 @@ export function generateGmailSignatureHTML(data: SignatureData): string {
     <tbody>
       <tr>
         <td style="padding: 0;">
-          <img src="https://d36urhup7zbd7q.cloudfront.net/6521285898797056/5144592697917440/3fee897d-5421-46d0-8e5d-3d9cd3dfd70b/signoff.gif?ck=1706898871.58" alt="Kind regards," height="30" style="height: 30px; display: block; max-width: 150px;">
+          <img src="https://d36urhup7zbd7q.cloudfront.net/6521285898797056/5144592697917440/3fee897d-5421-46d0-8e5d-3d9cd3dfd70b/signoff.gif?ck=1706898871.58" alt="Kind regards," height="38" style="height: 38px; display: block; max-width: 180px;">
         </td>
       </tr>
       <tr>
-        <td style="padding-top: 16px;"></td>
+        <td style="padding-top: 20px;"></td>
       </tr>
       <tr>
         <td style="padding: 0;">
