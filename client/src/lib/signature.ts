@@ -11,8 +11,8 @@ export interface SignatureData {
     instagram: string;
     youtube: string;
     tiktok: string;
-    apple: string;
-    playstore: string;
+    apple: boolean;
+    playstore: boolean;
   };
   enabledIcons: {
     instagram: boolean;
@@ -143,43 +143,90 @@ export function generateGmailSignatureHTML(data: SignatureData): string {
     .map(([platform]) => {
       const url = data.socialLinks[platform as keyof typeof data.socialLinks];
       const iconUrl = socialIconUrls[platform as keyof typeof socialIconUrls];
-      return `<td style="padding-right: 8px;"><a href="${url}" style="text-decoration: none; display: inline-block;" target="_blank"><img src="${iconUrl}" width="24" height="24" style="border: 0; display: block;" alt="${platform}"></a></td>`;
+      return `<td align="left" style="margin: 0px; padding-right: 6px; text-align: center; padding-top: 0px;"><a href="${url}" style="text-decoration: none;" target="_blank"><img width="24" height="24" src="${iconUrl}" border="0" alt="${platform}" style="float: left; border: none; max-width: 24px; height: 24px;"></a></td>`;
     })
     .join('');
 
+  // Strict Gmail-friendly format that preserves styling better
   return `
-    <div style="font-family: Arial, sans-serif; font-size: 14px; color: #191b1d;">
-      <p style="margin: 0 0 8px;">
-        <img src="https://cdn.shopify.com/s/files/1/0593/8125/2163/files/signoff.png?v=1739309984" alt="Kind regards," style="width: 150px; height: auto;">
-      </p>
-      <table style="border-collapse: collapse; margin: 0; padding: 0;">
-        <tr>
-          <td style="vertical-align: top; padding-right: 12px;">
-            ${data.logo ? `<a href="https://icebarrel.com/" style="display: block;" target="_blank">
-              <img src="${data.logo}" width="70" style="width: 70px; height: auto; border: 0;" alt="Ice Barrel Logo">
-            </a>` : ''}
-          </td>
-          <td style="vertical-align: top; padding-left: 12px; border-left: 2px solid #191b1d;">
-            <div style="margin-bottom: 4px;">
-              <strong style="font-size: 16px; color: #191b1d;">${data.name}</strong><br>
-              <span style="font-size: 14px; color: #191b1d;">${data.title}${data.title ? ', ' : ''}${data.company}</span>
-            </div>
-            <div style="margin: 8px 0; font-size: 11px;">
-              <a href="${data.website}" style="color: #191b1d; text-decoration: none;" target="_blank">www.icebarrel.com</a>
-              &nbsp;&nbsp;|&nbsp;&nbsp;
-              <a href="mailto:${data.email}" style="color: #191b1d; text-decoration: none;">${data.email}</a>
-            </div>
-            <table cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin-top: 8px;">
+<div style="font-family: Arial; max-width: 440px;">
+  <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; min-width: 100%;">
+    <tbody>
+      <tr>
+        <td style="padding: 0;">
+          <img src="https://d36urhup7zbd7q.cloudfront.net/6521285898797056/5144592697917440/3fee897d-5421-46d0-8e5d-3d9cd3dfd70b/signoff.gif?ck=1706898871.58" alt="Kind regards," height="30" style="height: 30px; display: block; max-width: 150px;">
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 16px;"></td>
+      </tr>
+      <tr>
+        <td style="padding: 0;">
+          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; min-width: 100%;">
+            <tbody>
               <tr>
-                ${socialIcons}
+                <td style="vertical-align: top; width: 70px; padding-right: 12px;">
+                  <a href="https://icebarrel.com/" target="_blank" style="display: block;">
+                    <img src="${data.logo}" width="70" height="70" alt="Ice Barrel Logo" style="width: 70px; height: 70px; border-radius: 4px; display: block;">
+                  </a>
+                </td>
+                <td style="vertical-align: top; padding-left: 12px; border-left: 2px solid #191b1d;">
+                  <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                    <tbody>
+                      <tr>
+                        <td style="padding: 0;">
+                          <span style="font-family: Arial; font-size: 16px; font-weight: bold; color: #191b1d; display: block;">${data.name}</span>
+                          <span style="font-family: Arial; font-size: 13px; color: #191b1d; display: block;">${data.title}${data.title && data.company ? ', ' : ''}${data.company}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top: 12px;">
+                          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                            <tbody>
+                              <tr>
+                                <td style="font-family: Arial; font-size: 11px; color: #191b1d;">
+                                  <a href="https://www.icebarrel.com/" style="color: #191b1d; text-decoration: none;">${data.website}</a>
+                                  ${data.email ? `&nbsp;&nbsp;|&nbsp;&nbsp;<a href="mailto:${data.email}" style="color: #191b1d; text-decoration: none;">${data.email}</a>` : ''}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-top: 12px;">
+                          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                            <tbody>
+                              <tr>${socialIcons}</tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
               </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-      <div style="margin-top: 16px; padding-top: 8px; border-top: 1px solid #888; font-size: 10px; color: #888;">
-        IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.
-      </div>
-    </div>
-  `;
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-top: 16px;"></td>
+      </tr>
+      <tr>
+        <td style="padding: 0; border-top: 1px solid #888888;">
+          <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; min-width: 100%;">
+            <tbody>
+              <tr>
+                <td style="padding: 9px 0 0 0; font-family: Arial; font-size: 10px; line-height: 12px; color: #888888;">
+                  IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>`;
 }

@@ -30,33 +30,62 @@ export function SignaturePreview({ signatureData }: SignaturePreviewProps) {
 
   const copyAsRichText = async () => {
     try {
-      // Create a hidden div with the signature content
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = generateGmailSignatureHTML(signatureData);
-      document.body.appendChild(tempDiv);
+      // Create a hidden iframe to preserve styles better when copying
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.top = '0';
+      iframe.style.left = '0';
+      iframe.style.width = '2px';
+      iframe.style.height = '2px';
+      iframe.style.opacity = '0.01';
+      document.body.appendChild(iframe);
       
-      // Select the content
-      const range = document.createRange();
-      range.selectNode(tempDiv);
-      const selection = window.getSelection();
-      if (selection) {
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
-      
-      // Execute copy command to copy rich text
-      document.execCommand('copy');
-      
-      // Clean up
-      document.body.removeChild(tempDiv);
-      if (selection) {
-        selection.removeAllRanges();
-      }
-      
-      toast({
-        title: "Copied!",
-        description: "Signature copied as rich text for Gmail",
-      });
+      // Wait for iframe to be ready
+      iframe.onload = () => {
+        try {
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (!iframeDoc) throw new Error("Could not access iframe document");
+          
+          // Add content to iframe with preserved styles
+          iframeDoc.open();
+          iframeDoc.write(`
+            <html>
+              <head>
+                <style>
+                  body { margin: 0; padding: 0; }
+                  table { border-collapse: collapse; }
+                  * { box-sizing: border-box; }
+                </style>
+              </head>
+              <body>${generateGmailSignatureHTML(signatureData)}</body>
+            </html>
+          `);
+          iframeDoc.close();
+          
+          // Select the content
+          const range = iframeDoc.createRange();
+          range.selectNodeContents(iframeDoc.body);
+          const selection = iframeDoc.getSelection();
+          if (selection) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+          
+          // Execute copy command
+          iframeDoc.execCommand('copy');
+          
+          // Clean up
+          document.body.removeChild(iframe);
+          
+          toast({
+            title: "Copied!",
+            description: "Signature copied as rich text for Gmail",
+          });
+        } catch (error) {
+          document.body.removeChild(iframe);
+          throw error;
+        }
+      };
     } catch (err) {
       toast({
         title: "Error",
