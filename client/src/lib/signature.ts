@@ -213,6 +213,11 @@ export function generateGmailSignatureHTML(data: SignatureData): string {
         </td>
       </tr>
       <tr>
+        <td style="padding-top: 15px; padding-bottom: 15px;">
+          <!-- Empty row for spacing -->
+        </td>
+      </tr>
+      <tr>
         <td style="padding-top: 10px; border-top: 1px solid #e5e7eb;">
           <p style="color: #4B5563; font-size: 11px; line-height: 16px; margin-top: 16px; margin-bottom: 0;">
             IMPORTANT: The contents of this email and any attachments are confidential. They are intended for the named recipient(s) only. If you have received this email by mistake, please notify the sender immediately and do not disclose the contents to anyone or make copies thereof.
